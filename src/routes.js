@@ -6,6 +6,7 @@ const commentsController = require('./controllers/comments');
 const pingsController = require ('./controllers/pings')
 const addModels = require('./middleware/add-models');
 const checkAuthentication = require('./middleware/check-authentication');
+const { isAuthorized } = require('./utils/auth-utils');
 
 const Router = express.Router();
 Router.use(addModels);
@@ -16,7 +17,7 @@ Router.patch("/pings/:id", checkAuthentication, pingsController.update)
 
 // COMMENTS ROUTES
 Router.post('/userscomment', commentsController.create);
-Router.get('/userscomment', commentsController.list);
+Router.get('/userscomment/:id', commentsController.list);
 Router.delete('/userscomment', commentsController.destroy);
 Router.patch('/userscomment', commentsController.update);
 

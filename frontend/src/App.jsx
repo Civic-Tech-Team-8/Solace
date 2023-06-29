@@ -4,7 +4,7 @@ import Home from "./pages/Home";
 import SignUpPage from "./pages/SignUp";
 import LoginPage from "./pages/Login";
 import SiteHeadingAndNav from "./components/SiteHeadingAndNav";
-import Disaster from './pages/Disaster';
+import Disaster from "./pages/Disaster";
 import NotFoundPage from "./pages/NotFound";
 import UserContext from "./contexts/current-user-context";
 import { checkForLoggedInUser } from "./adapters/auth-adapter";
@@ -19,10 +19,11 @@ export default function App() {
 
   return (
     <>
-      <SiteHeadingAndNav />
       <main>
+        <SiteHeadingAndNav />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/users" element={<UsersPage />} />

@@ -5,7 +5,7 @@ import { getPostOptions, fetchHandler, deleteOptions } from "../utils";
 import FriendsCard from "../components/UserCard";
 import UserFriendsCard from "../components/UserFriendsCard";
 import UserItem from "../components/UserItem";
-import AllUsersContext from '../contexts/all-users-context'
+import AllUsersContext from "../contexts/all-users-context";
 
 export default function UsersPage() {
   // const [users, setUsers] = useState([]);
@@ -33,10 +33,9 @@ export default function UsersPage() {
   };
 
   // console.log(findUserIdByName("ayaz"));
-
-  const handlePing = async(username) => {
+  const handlePing = async (username) => {
     // const friendId = findUserIdByName(username);
-    // const [data, error] = await fetchHandler(`/api/pings`, 
+    // const [data, error] = await fetchHandler(`/api/pings`,
     //   getPostOptions({ friendID })
     // );
     // if (error) {
@@ -58,10 +57,10 @@ export default function UsersPage() {
     const friendId = findUserIdByName(username);
 
     try {
-      await fetchHandler('/api/pings', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+      await fetchHandler("/api/pings", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ receiverId: friendId }),
       });
       console.log(`${username} asked if you're safe`);
@@ -91,7 +90,6 @@ export default function UsersPage() {
       body: JSON.stringify({ friendId }),
     });
     if (error) return console.log(error);
-    console.log(data);
   };
 
   return (
@@ -122,7 +120,6 @@ export default function UsersPage() {
           <h1 className="list-title">Users</h1>
           <div>
             {users.map((user) => {
-
               return (
                 <FriendsCard
                   key={user.id}

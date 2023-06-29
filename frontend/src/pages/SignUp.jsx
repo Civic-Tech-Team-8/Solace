@@ -1,6 +1,6 @@
 import { useContext, useState, useEffect } from "react";
 import { useNavigate, Navigate, Link } from "react-router-dom";
-import mapboxgl from 'mapbox-gl';
+import mapboxgl from "mapbox-gl";
 import CurrentUserContext from "../contexts/current-user-context";
 import { createUser } from "../adapters/user-adapter";
 
@@ -8,7 +8,11 @@ import { createUser } from "../adapters/user-adapter";
 // more validation and provide real time feedback to the user about usernames and passwords
 export default function SignUpPage() {
   const navigate = useNavigate();
-  const { currentUser, setCurrentUser, userLocation: location } = useContext(CurrentUserContext);
+  const {
+    currentUser,
+    setCurrentUser,
+    userLocation: location,
+  } = useContext(CurrentUserContext);
   const [errorText, setErrorText] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -21,7 +25,9 @@ export default function SignUpPage() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setErrorText("");
-    if (!username || !password) { return setErrorText("Missing username or password"); }
+    if (!username || !password) {
+      return setErrorText("Missing username or password");
+    }
 
     const [user, error] = await createUser({ username, password, location });
     if (error) return setErrorText(error.statusText);
@@ -38,17 +44,18 @@ export default function SignUpPage() {
 
   // MAP GLOBE BACKGROUND ================================================================
   useEffect(() => {
-    mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRkYWV4czAxa28za3QzeWgzcnB5YnAifQ.Sa0yc1I-LsaVBVMIPLYzxA';
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRkYWV4czAxa28za3QzeWgzcnB5YnAifQ.Sa0yc1I-LsaVBVMIPLYzxA";
 
     const map = new mapboxgl.Map({
-      container: 'signInMap',
-      style: 'mapbox://styles/mapbox/satellite-v9',
-      projection: 'globe',
+      container: "signInMap",
+      style: "mapbox://styles/mapbox/satellite-v9",
+      projection: "globe",
       zoom: 1.5,
       center: [-90, 40],
     });
 
-    map.on('style.load', () => {
+    map.on("style.load", () => {
       map.setFog({});
     });
 
@@ -73,42 +80,42 @@ export default function SignUpPage() {
       }
     }
 
-    map.on('mousedown', () => {
+    map.on("mousedown", () => {
       userInteracting = true;
     });
 
-    map.on('mouseup', () => {
+    map.on("mouseup", () => {
       userInteracting = false;
       spinGlobe();
     });
 
-    map.on('dragend', () => {
+    map.on("dragend", () => {
       userInteracting = false;
       spinGlobe();
     });
 
-    map.on('pitchend', () => {
+    map.on("pitchend", () => {
       userInteracting = false;
       spinGlobe();
     });
 
-    map.on('rotateend', () => {
+    map.on("rotateend", () => {
       userInteracting = false;
       spinGlobe();
     });
 
-    map.on('moveend', () => {
+    map.on("moveend", () => {
       spinGlobe();
     });
 
-    document.getElementById('btn-spin').addEventListener('mousemove', (e) => {
+    document.getElementById("btn-spin").addEventListener("mousemove", (e) => {
       spinEnabled = !spinEnabled;
       if (spinEnabled) {
         spinGlobe();
-        e.target.innerHTML = 'Pause rotation';
+        e.target.innerHTML = "Pause rotation";
       } else {
         map.stop();
-        e.target.innerHTML = 'Start rotation';
+        e.target.innerHTML = "Start rotation";
       }
     });
 
@@ -117,11 +124,12 @@ export default function SignUpPage() {
 
   return (
     <>
-
-      <div className='sign-up-page'>
+      <div className="sign-up-page">
         <h1 className="form-title">Sign Up</h1>
         <form onSubmit={handleSubmit} onChange={handleChange}>
-          <label htmlFor="username" className="username-label">Username</label>
+          <label htmlFor="username" className="username-label">
+            Username
+          </label>
           <input
             autoComplete="off"
             type="text"
@@ -132,7 +140,9 @@ export default function SignUpPage() {
             placeholder="xxxxxxxxx"
           />
 
-          <label htmlFor="password" className="password-label">Password</label>
+          <label htmlFor="password" className="password-label">
+            Password
+          </label>
           <input
             autoComplete="off"
             type="password"
@@ -151,13 +161,17 @@ export default function SignUpPage() {
         </form>
         {!!errorText && <p>{errorText}</p>}
         <p className="form-redirect">
-          Already have an account with us? <Link to="/login" className="form-redirect-link">Log in!</Link>
+          Already have an account with us?{" "}
+          <Link to="/login" className="form-redirect-link">
+            Log in!
+          </Link>
         </p>
       </div>
       <div>
         <div id="signInMap"></div>
         <button id="btn-spin">Pause rotation</button>
       </div>
+      {/* </div> */}
     </>
   );
 }

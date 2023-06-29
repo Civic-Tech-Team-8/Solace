@@ -9,17 +9,22 @@ class Comment {
     this.comment = comment;
   }
 
-  static async listComment() {
-    const query = 'SELECT * FROM comments';
-    const { rows } = await knex.raw(query);
+  static async listComment(eventId) {
+    const query = `SELECT *
+    FROM comments 
+    JOIN users 
+    ON comments.user_id = users.id
+    WHERE event_id = ? 
+    `;
+    const { rows } = await knex.raw(query, [eventId]);
     return rows;
   }
 
-  static async create(event_id, user_id, commented) {
+  static async create(eventId, userId, commented) {
     const query = `INSERT INTO comments (event_id, user_id, comments)
       VALUES (?, ?, ?)
       RETURNING *`;
-    const { rows: [comment] } = await knex.raw(query, [event_id, user_id, commented]);
+    const { rows: [comment] } = await knex.raw(query, [eventId, userId, commented]);
     return comment;
   }
   static async updateComment(commented, id) {

@@ -42,7 +42,7 @@ class User {
     return user ? new User(user) : null;
   }
 
-  static async create(username, password, { myLatitude, myLongitude }/*, isSafe*/) {
+  static async create(username, password, { myLatitude, myLongitude }) {
     const passwordHash = await hashPassword(password);
 
     const query = `INSERT INTO users (username, password_hash, latitude, longitude)

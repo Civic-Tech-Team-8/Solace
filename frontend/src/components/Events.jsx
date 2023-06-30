@@ -9,8 +9,16 @@ import CommentModal from "./CommentModal.jsx";
 // ------------------List of Events ----------------
 function EventList() {
   const [events, setEvents] = useState([]);
-  const { updateEventData, userLocation } = useContext(CurrentUserContext);
+  const {
+    updateEventData,
+    updateAlertData,
+    userLocation,
+    updateUserAlertData,
+    currentUser,
+  } = useContext(CurrentUserContext);
   const [modal, setModal] = useState(false);
+  const [alert, setAlert] = useState([]);
+  const [userAlert, setUserAlert] = useState([]);
   const [singleEvent, setSingleEvent] = useState([]);
   const [commentEvent, setCommentEvent] = useState([]);
 
@@ -27,7 +35,9 @@ function EventList() {
 
         setEvents(filteredEvents);
         updateEventData(data);
+        // console.log("DATA:", data);
 
+        // Store the data in local storage
         localStorage.setItem("eventsData", JSON.stringify(data));
       })
       .catch((error) => console.log(error));
@@ -35,40 +45,49 @@ function EventList() {
 
   const fetchProcessed = async () => {
     const data = await apiFetchHandler("/api/events");
+    console.log("API ME DATA", data);
+    setAlert(data[0]);
+    updateAlertData(data[0]);
   };
+
+  const latitude = events[0]?.geometry[0]?.coordinates[0];
+  const longitude = events[0]?.geometry[0]?.coordinates[1];
+  const alertLatitude = alert[0]?.eventCoordinates[0][1];
+  const alertLongitude = alert[0]?.eventCoordinates[0][0];
+
+  const fetchLayers = () => {
+    fetch(
+      `https://api.weather.gov/alerts?point=${alertLatitude},${alertLongitude}`
+    )
+      .then((response) => response?.json())
+      .then((data) => {
+        setUserAlert(data);
+        updateUserAlertData(data);
+        console.log("coor:", data.features[0].properties);
+      })
+      .catch((error) => console.log(error));
+  };
+  useEffect(() => {
+    if (alertLatitude && alertLongitude) {
+      fetchLayers();
+    }
+  }, [alertLatitude, alertLongitude]);
 
   useEffect(() => {
     fetchEvents();
     fetchProcessed();
     updateEventData();
+    updateUserAlertData();
   }, []);
 
-  function AlertList() {
-    const [alert, setAlert] = useState([]);
-
-    const latitude = events[0]?.geometry[0]?.coordinates[0];
-    const longitude = events[0]?.geometry[0]?.coordinates[1];
-
-    const fetchLayers = () => {
-      fetch(
-        `https://api.weather.gov/alerts?point=${userLocation?.myLatitude},${userLocation?.myLongitude}`
-      )
-        .then((response) =>
-          // console.log(response);
-          response.json()
-        )
-        .then((data) => {
-          setAlert(data.events);
-          // console.log("ALERT DATA:", alert);
-        })
-        .catch((error) => console.log(error));
-    };
-
-    useEffect(() => {
-      fetchLayers();
-    }, []);
-  }
-  const convertToMiles = (latitude2, latitude1, longtitude2, longtitude1) => {
+  const convertToMiles = (
+    latitude2,
+    latitude1,
+    longtitude2,
+    longtitude1,
+    id
+  ) => {
+    console.log(latitude1, longtitude1, alert);
     const math = Math.floor(
       Math.sqrt(
         (latitude2 * 69 - latitude1 * 69) * (latitude2 * 69 - latitude1 * 69) +
@@ -77,64 +96,75 @@ function EventList() {
       )
     );
     return math >= 4.5
-      ? `${Math.ceil(math)} miles from you`
-      : `${Math.floor(math)} miles from you`;
+      ? `${Math.ceil(math)} miles`
+      : `${Math.floor(math)} miles`;
   };
-
   const toggleModal = (event) => {
     setSingleEvent(event);
     setModal(!modal);
   };
+  const eventId = events.map((event) => event.id);
+  const alertProp = userAlert.features?.map((alerts) => alerts.properties);
+  const alertId = alertProp?.map((a) => a.id);
+  console.log(alertId);
 
+  function extractDateFromString(inputString) {
+    const pattern =
+      /(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}\s+at\s+\d{1,2}:\d{2}(am|pm)/i;
+
+    const match = inputString.match(pattern);
+    console.log(match, inputString);
+    if (match) {
+      return match[0];
+    }
+    // Return null if no matching date is found
+  }
   return (
-    <dl className="eventList">
-      {modal && (
-        <div className="modal">
-          <div className="modal-content">
-            <CommentModal data={singleEvent} closeButton={toggleModal} />
+    <>
+      <dl className="eventList">
+        {modal && (
+          <div className="modal">
+            <div className="modal-content">
+              <CommentModal data={singleEvent} closeButton={toggleModal} />
+            </div>
           </div>
-        </div>
-      )}
-      <AlertList />
-      {events.map((event) => (
-        <React.Fragment key={event.id}>
-          <li>
-            <a href="#">
-              <div className="eventRow">
-                <div className="date">
-                  {event.geometry[0].date.slice(0, 16).replace("T", " ")}
-                </div>
-                {event.categories.map((category) => (
-                  <div className="eventType" key={category.id}>
-                    {category.title}
+        )}
+        {alert?.map((a) => {
+          console.log("WE HERE FOR THIS", a);
+          return (
+            <React.Fragment key={a.id}>
+              <li>
+                <a href="#">
+                  <div className="eventRow">
+                    <div className="state">{a?.headline.split("NWS")[1]}</div>
+                    <div className="date">
+                      {extractDateFromString(a?.headline)}
+                    </div>
+                    <div className="eventType">{a?.event}</div>
+                    <div className="eventTitle">{a?.severity}</div>
+                    <div className="distance">
+                      {convertToMiles(
+                        userLocation?.myLatitude,
+                        a.eventCoordinates[0][1],
+                        userLocation?.myLongitude,
+                        a.eventCoordinates[0][0]
+                      )}
+                    </div>
+                    <button
+                      className="btn-modal"
+                      onClick={() => toggleModal(a)}
+                    >
+                      COMMENT
+                    </button>
                   </div>
-                ))}
-                <div className="eventTitle">{event.title}</div>
-                <div className="distance">
-                  {convertToMiles(
-                    userLocation.myLatitude,
-                    event.geometry[0].coordinates[0],
-                    userLocation.myLongitude,
-                    event.geometry[0].coordinates[1]
-                  )}
-                </div>
-                <button
-                  className="btn-modal"
-                  onClick={() => toggleModal(event)}
-                >
-                  COMMENT
-                </button>
-              </div>
-              {event.description && (
-                <dd>
-                  <em>{event.description}</em>
-                </dd>
-              )}
-            </a>
-          </li>
-        </React.Fragment>
-      ))}
-    </dl>
+                  <em> Status: {a?.certainty}</em>
+                </a>
+              </li>
+            </React.Fragment>
+          );
+        })}
+      </dl>
+    </>
   );
 }
 

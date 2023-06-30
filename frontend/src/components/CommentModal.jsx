@@ -8,7 +8,8 @@ export default function CommentModal({ data, closeButton }) {
   const { currentUser } = useContext(CurrentUserContext);
 
   console.log(currentUser);
-  const eventId = Number(data.id.slice(6));
+  const eventId = data.id.replace(/\D/g, "").slice(10, 17);
+  console.log("I WANT TO SEE", data.id.replace(/\D/g, "").slice(10, 17));
   useEffect(() => {
     async function getData(eventId) {
       const response = await fetch(`/api/userscomment/${eventId}`);

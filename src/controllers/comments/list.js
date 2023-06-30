@@ -3,10 +3,10 @@ const listComment = async (req, res) => {
     db: { Comment },
     params: { id },
   } = req;
+  console.log("this data here", id);
 
   const commented = await Comment.listComment(id);
   // session.userId = user.id;
-  console.log(id);
 
   res.send(commented);
 };

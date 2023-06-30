@@ -6,7 +6,7 @@ export default function CommentModal({ data, closeButton }) {
   const [comments, setComments] = useState("");
   const [eventComments, setEventComments] = useState([]);
   const { currentUser } = useContext(CurrentUserContext);
-
+  const inputValue = document.querySelector(".inputValue");
   console.log(currentUser);
   const eventId = data.id.replace(/\D/g, "").slice(10, 17);
   console.log("I WANT TO SEE", data.id.replace(/\D/g, "").slice(10, 17));
@@ -20,7 +20,7 @@ export default function CommentModal({ data, closeButton }) {
     getData(eventId);
   }, []);
 
-  const postComment = async () => {
+  const postComment = async (e) => {
     const res = await fetch("/api/userscomment", {
       method: "POST",
       credentials: "include",
@@ -34,6 +34,7 @@ export default function CommentModal({ data, closeButton }) {
     // console.log(commentArr, "HII");x
     commentArr.push(newData);
     setEventComments(commentArr);
+    inputValue.value = "";
   };
 
   // const getCommentData = async (eventId) => {
@@ -57,8 +58,16 @@ export default function CommentModal({ data, closeButton }) {
           );
         })}
       </div>
-      <input type="text" name="comment" id="" onChange={changeInput} />
-      <button onClick={postComment}>SEND</button>
+      <input
+        className="inputValue"
+        type="text"
+        name="comment"
+        id=""
+        onChange={changeInput}
+      />
+      <button className="send-modal" onClick={postComment}>
+        SEND
+      </button>
       <button onClick={closeButton} className="close-modal">
         ClOSE
       </button>

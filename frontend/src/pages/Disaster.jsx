@@ -8,7 +8,8 @@ import CurrentUserContext from '../contexts/current-user-context.js';
 
 function InfoList() {
   const [events, setEvents] = useState([]);
-  const { eventData, userLocation, updateEventData } = useContext(CurrentUserContext); // Data from MapComponent
+  const [nearByUsers, setNearByUsers] = useState([])
+  const { eventData, userLocation, updateEventData, alert } = useContext(CurrentUserContext); // Data from MapComponent
 
   const { eventId } = useParams();
   const eventsId = events.map((event) => event.id);
@@ -22,7 +23,12 @@ function InfoList() {
     if (storedData) {
       const parsedData = JSON.parse(storedData);
       const filteredEvents = parsedData?.events.filter((event) => !event.categories.some((category) => category.title === 'Sea and Lake Ice'));
-
+      const getNearByUsers = () => {
+        const users = alert.map(({nearByUsers}) => nearByUsers)
+        setNearByUsers(users)
+        console.log(nearByUsers)
+      }
+      getNearByUsers()
       setEvents(filteredEvents);
       updateEventData(parsedData);
     }
@@ -36,7 +42,6 @@ function InfoList() {
   //   </div>
   // );
 
-  const selectedEvent = events.find((event) => event.id === eventId); // find the selected event.
 
   return (
     <div className="container">
@@ -52,6 +57,17 @@ function InfoList() {
                       {category.title}
                     </div>
                   ))}
+                   <div className="disasterParticipants">Participants:
+                                        <li> {nearByUsers.map(user => {
+                                            return (
+                                                <div key={user.id}>
+                                                    <h6>{user.username}</h6>
+                                                    <p>{user.isSafe ? 'In Solace' : 'Out of Solace'}</p>
+                                                </div>
+                                            )
+                                        })}
+                                        </li>
+                                         </div>
                   <div className="disasterTitle">{selectedEvent.title}</div>
                 </div>
                 {selectedEvent.description && (

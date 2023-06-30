@@ -16,8 +16,11 @@ const DisasterPopupMain = () => {
         const severity = alertData[0]?.severity;
         let nearByUsers = alertData[0]?.nearByUsers;
         const date = alertData[0]?.headline.slice(20, 52);
-        nearByUsers = ["Mahdi Wood ", "Danyal Browning "];
-
+        console.log(nearByUsers)
+        console.log(description)
+        console.log(headline)
+        console.log(instruction)
+        console.log(severity)
         return (
             <>
                 {currentUser && (
@@ -42,8 +45,18 @@ const DisasterPopupMain = () => {
                                     <em className="description">{description}</em>
                                     </div>
                                     <div className="d">
-                                    <div className="disasterLocation">{instruction}</div>
-                                        <div className="disasterParticipants">Participants: {nearByUsers} </div>
+                                    <div className="disasterLocation">{ instruction ? instruction : "no instruction"}</div>
+                                    <div className="disasterParticipants">Participants:
+                                        <li> {nearByUsers.map(user => {
+                                            return (
+                                                <div key={user.id}>
+                                                    <h6>{user.username}</h6>
+                                                    <p>{user.isSafe ? 'In Solace' : 'Out of Solace'}</p>
+                                                </div>
+                                            )
+                                        })}
+                                        </li>
+                                         </div>
                                     </div>
                                 </li>
                             </React.Fragment>

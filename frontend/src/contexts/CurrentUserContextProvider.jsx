@@ -2,6 +2,7 @@
 /* eslint-disable max-len */
 import { useState, useEffect } from "react";
 import CurrentUserContext from "./current-user-context";
+import { apiFetchHandler } from "../utils";
 
 export default function CurrentUserContextProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
@@ -11,6 +12,16 @@ export default function CurrentUserContextProvider({ children }) {
   const [isSafe, setIsSafe] = useState(true);
   const [myLatitude, setLatitude] = useState(null); // Hook is used to retrieve the geolocation data when the component mounts
   const [myLongitude, setLongitude] = useState(null);
+  const [alert, setAlert] = useState([]);
+
+  const fetchProcessed = async () => {
+    const data = await apiFetchHandler("/api/events");
+    console.log(data[0])
+    setAlert(data[0]);
+    updateAlertData(data[0]);
+  };
+
+  fetchProcessed()
 
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(showPosition);
@@ -33,7 +44,7 @@ export default function CurrentUserContextProvider({ children }) {
   };
 
   const userLocation = { myLatitude, myLongitude };
-  const context = { currentUser, setCurrentUser, eventData, updateEventData, updateAlertData, alertData, userLocation, isSafe, setIsSafe, userAlertData, updateUserAlertData };
+  const context = { currentUser, setCurrentUser, eventData, updateEventData, updateAlertData, alertData, userLocation, isSafe, setIsSafe, userAlertData, updateUserAlertData, alert };
 
   return (
     <CurrentUserContext.Provider value={context}>

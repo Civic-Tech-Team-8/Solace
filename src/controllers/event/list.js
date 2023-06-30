@@ -23,10 +23,11 @@ const listEvents = async (req, res) => {
   const processed = [];
 
   const { features: disasters } = await fetchData('https://api.weather.gov/alerts/active?severity=Severe&limit=1');
+  
   const users = await User.list();
+  // console.log(users[0].update)
   const filtered = disasters.filter((disaster) => !!disaster.geometry);
   filtered.forEach((disaster) => {
-    console.log(disaster)
     const { geometry: { coordinates } } = disaster;
     const polygon = turf.polygon(coordinates);
     const usersToAdd = [];
@@ -39,6 +40,7 @@ const listEvents = async (req, res) => {
         usersToAdd.push(user);
       }
     });
+
     const { 
       id,
       properties: {
@@ -48,6 +50,7 @@ const listEvents = async (req, res) => {
       description,
       instruction,
       response,
+      status
     } } = disaster;
     processed.push({
       id,
@@ -58,8 +61,19 @@ const listEvents = async (req, res) => {
       instruction,
       response,
       nearByUsers: usersToAdd,
-      eventCoordinates: coordinates[0] });
+      eventCoordinates: coordinates[0],
+      status });
   });
+  let j = 0
+  for(let i = 0; i < processed.length && j < users.length; i++) {
+    const curr = processed[i];
+    const currentIndex = j
+    while(j < users.length) {
+      curr.nearByUsers.push(users[j])
+      if(j - currentIndex === 5) break;
+      j++
+    }
+  }
   return res.send(processed);
   // return res.send(202)
 };

@@ -10,30 +10,30 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-trailing-spaces */
 
-import { useEffect, useContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import mapboxgl from 'mapbox-gl';
-import CurrentUserContext from '../contexts/current-user-context.js';
-import 'mapbox-gl/dist/mapbox-gl.css';
+import { useEffect, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import mapboxgl from "mapbox-gl";
+import CurrentUserContext from "../contexts/current-user-context.js";
+import "mapbox-gl/dist/mapbox-gl.css";
 
 const MapComponent = () => {
   const [myLatitude, setLatitude] = useState(null); // Hook is used to retrieve the geolocation data when the component mounts
   const [myLongitude, setLongitude] = useState(null);
 
-  const { eventData, userAlertData, alertData } = useContext(CurrentUserContext); // Data from MapComponent
+  const { eventData, userAlertData, alertData } =
+    useContext(CurrentUserContext); // Data from MapComponent
   const events = eventData?.events;
-  const data = events?.filter((event) => !event.categories.some((category) => category.title === 'Sea and Lake Ice'));
+  const data = events?.filter(
+    (event) =>
+      !event.categories.some(
+        (category) => category.title === "Sea and Lake Ice"
+      )
+  );
 
-    if (alertData) {
-      console.log(alertData[0]?.eventCoordinates[0][1]);
-    }
+  if (alertData) {
+    console.log(alertData[0]?.eventCoordinates[0][1]);
+  }
   const navigate = useNavigate();
-  // const [eventLatitude, setEventLatitude] = useState(data[0].geometry[0]?.coordinates[0]); 
-  // const [eventLongitude, setEventLongitude] = useState(data[0].geometry[0]?.coordinates[1]);
-
-  // the "?" character is if it doesn't exist give undefined
-
-  // console.log("event data from map:", eventData);
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -46,10 +46,11 @@ const MapComponent = () => {
       setLongitude(position?.coords.longitude);
     }
 
-    mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRnZGtmNjEzc2IzanF2c2xvYW54Y28ifQ.zOjQMeR4v4rGw4_L7_-Iig';
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRnZGtmNjEzc2IzanF2c2xvYW54Y28ifQ.zOjQMeR4v4rGw4_L7_-Iig";
     const map = new mapboxgl.Map({
-      container: 'map', // container ID
-      style: 'mapbox://styles/treyjaded/cliwe9c1002ak01qhag512fac', // style URL
+      container: "map", // container ID
+      style: "mapbox://styles/treyjaded/cliwe9c1002ak01qhag512fac", // style URL
       // DARK STYLE:     mapbox://styles/mapbox/dark-v11
       // CUSTOM TREVON STYLE:   mapbox://styles/treyjaded/cliwe9c1002ak01qhag512fac
       center: [myLongitude, myLatitude], // starting position [lng, lat] NJ = [-74.5, 40]
@@ -65,37 +66,31 @@ const MapComponent = () => {
         trackUserLocation: true,
         // Draw an arrow next to the location dot to indicate which direction the device is heading.
         showUserHeading: false,
-      }),
+      })
     );
     // Add zoom and rotation controls to the map.
     map.addControl(new mapboxgl.NavigationControl());
 
-    const eventRow = document.getElementsByClassName('eventRow');
-    // console.log("event row:", eventRow);
+    const eventRow = document.getElementsByClassName("eventRow");
 
-    
     for (let i = 0; i < eventRow.length; i++) {
       const element = eventRow[i];
-     
-    
+
       // Add event listener to the element
-      element.addEventListener('click', () => {
+      element.addEventListener("click", () => {
         // Handle the click event
         // Fly to a random location
         map.flyTo({
-          center: [alertData[i]?.eventCoordinates[0][0], alertData[i]?.eventCoordinates[0][1]],
+          center: [
+            alertData[i]?.eventCoordinates[0][0],
+            alertData[i]?.eventCoordinates[0][1],
+          ],
           essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         });
       });
     }
 
-
     // Access the specific element in the array
-
-
-
-
-
 
     for (let i = 0; i < data?.length; i++) {
       const latitude = alert[i]?.eventCoordinates[0][1];
@@ -107,37 +102,34 @@ const MapComponent = () => {
       const title = alertData[i].severity;
       const eventType = alertData[i].event;
 
-
       const mapHold = {
-        type: 'geojson',
+        type: "geojson",
         data: {
-          type: 'FeatureCollection',
-          features: [{
-            type: 'Feature',
-            geometry: {
-              type: 'Point',
-              coordinates: [alertLongitude, alertLatitude],
+          type: "FeatureCollection",
+          features: [
+            {
+              type: "Feature",
+              geometry: {
+                type: "Point",
+                coordinates: [alertLongitude, alertLatitude],
+              },
+              properties: {
+                title: `${eventType}`,
+                description: `${title}`,
+              },
             },
-            properties: {
-              title: `${eventType}`,
-              description: `${title}`,
-            },
-          }],
+          ],
         },
       };
 
-
-
-
       for (const feature of mapHold.data.features) {
-        map.on('load', () => {
-          const el = document.createElement('div');
-          el.className = 'marker';
+        map.on("load", () => {
+          const el = document.createElement("div");
+          el.className = "marker";
 
-          const userLocationPin = document.createElement('div');
-          
+          const userLocationPin = document.createElement("div");
+
           const coordinates = alertData[i]?.eventCoordinates[0]; // Coordinates of Disasters
-          console.log("coor:", coordinates);
           const { description } = feature.properties; // Description of Disasters
           const type = feature.properties.title; // Type of Disasters
 
@@ -151,13 +143,11 @@ const MapComponent = () => {
             closeOnClick: false,
           });
 
-          new mapboxgl.Marker(el)
-            .setLngLat(coordinates)
-            .addTo(map);
+          new mapboxgl.Marker(el).setLngLat(coordinates).addTo(map);
 
-          el.addEventListener('mouseenter', () => {
+          el.addEventListener("mouseenter", () => {
             // Change the cursor style as a UI indicator.
-            map.getCanvas().style.cursor = 'pointer';
+            map.getCanvas().style.cursor = "pointer";
             // Copy coordinates array.
 
             // Ensure that if the map is zoomed out such that multiple
@@ -169,23 +159,27 @@ const MapComponent = () => {
 
             // Populate the popup and set its coordinates
             // based on the feature found.
-            popup.setLngLat(coordinates).setHTML(`<h3>${type}</h3><p>${description}</p>`).addTo(map);
+            popup
+              .setLngLat(coordinates)
+              .setHTML(`<h3>${type}</h3><p>${description}</p>`)
+              .addTo(map);
           });
 
-          el.addEventListener('mouseleave', () => {
-            map.getCanvas().style.cursor = '';
+          el.addEventListener("mouseleave", () => {
+            map.getCanvas().style.cursor = "";
             popup.remove();
           });
-          
-          el.addEventListener('click', () => (
-            navigate(`/disaster/${data[i]?.id}`)// Navigate to the "/disaster" page with the specified ID
-          ));
+
+          el.addEventListener(
+            "click",
+            () => navigate(`/disaster/${data[i]?.id}`) // Navigate to the "/disaster" page with the specified ID
+          );
         });
       }
     }
   }, [data, myLatitude, myLongitude, alertData]);
   // [-74.5, 40]
-  return (<div id="map"></div>);
+  return <div id="map"></div>;
 };
 export default MapComponent;
 

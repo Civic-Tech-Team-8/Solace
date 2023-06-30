@@ -35,7 +35,6 @@ function EventList() {
 
         setEvents(filteredEvents);
         updateEventData(data);
-        // console.log("DATA:", data);
 
         // Store the data in local storage
         localStorage.setItem("eventsData", JSON.stringify(data));
@@ -45,7 +44,6 @@ function EventList() {
 
   const fetchProcessed = async () => {
     const data = await apiFetchHandler("/api/events");
-    console.log("API ME DATA", data);
     setAlert(data[0]);
     updateAlertData(data[0]);
   };
@@ -63,7 +61,6 @@ function EventList() {
       .then((data) => {
         setUserAlert(data);
         updateUserAlertData(data);
-        console.log("coor:", data.features[0].properties);
       })
       .catch((error) => console.log(error));
   };
@@ -87,7 +84,6 @@ function EventList() {
     longtitude1,
     id
   ) => {
-    console.log(latitude1, longtitude1, alert);
     const math = Math.floor(
       Math.sqrt(
         (latitude2 * 69 - latitude1 * 69) * (latitude2 * 69 - latitude1 * 69) +
@@ -106,14 +102,12 @@ function EventList() {
   const eventId = events.map((event) => event.id);
   const alertProp = userAlert.features?.map((alerts) => alerts.properties);
   const alertId = alertProp?.map((a) => a.id);
-  console.log(alertId);
 
   function extractDateFromString(inputString) {
     const pattern =
       /(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2}\s+at\s+\d{1,2}:\d{2}(am|pm)/i;
 
     const match = inputString.match(pattern);
-    console.log(match, inputString);
     if (match) {
       return match[0];
     }
@@ -130,7 +124,6 @@ function EventList() {
           </div>
         )}
         {alert?.map((a) => {
-          console.log("WE HERE FOR THIS", a);
           return (
             <React.Fragment key={a.id}>
               <li>

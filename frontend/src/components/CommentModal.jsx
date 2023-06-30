@@ -7,14 +7,11 @@ export default function CommentModal({ data, closeButton }) {
   const [eventComments, setEventComments] = useState([]);
   const { currentUser } = useContext(CurrentUserContext);
   const inputValue = document.querySelector(".inputValue");
-  console.log(currentUser);
   const eventId = data.id.replace(/\D/g, "").slice(10, 17);
-  console.log("I WANT TO SEE", data.id.replace(/\D/g, "").slice(10, 17));
   useEffect(() => {
     async function getData(eventId) {
       const response = await fetch(`/api/userscomment/${eventId}`);
       const commentData = await response.json();
-      console.log(commentData);
       setEventComments(commentData);
     }
     getData(eventId);
@@ -31,18 +28,11 @@ export default function CommentModal({ data, closeButton }) {
     const newData = await res.json();
     newData.username = currentUser.username;
     const commentArr = [...eventComments];
-    // console.log(commentArr, "HII");x
     commentArr.push(newData);
     setEventComments(commentArr);
     inputValue.value = "";
   };
 
-  // const getCommentData = async (eventId) => {
-  //   const response = await fetch(`/api/userscomment/${eventId}`);
-  //   const commentData = await response.json();
-  //   console.log(commentData);
-  // };
-  // console.log(eventComments, "HIII");
   const changeInput = (e) => {
     setComments(e.target.value);
   };
@@ -50,7 +40,6 @@ export default function CommentModal({ data, closeButton }) {
     <>
       <div className="container">
         {eventComments.map((each) => {
-          console.log(each.username, "HII");
           return (
             <p key={crypto.randomUUID()}>
               {each.username + ":" + each.comments}

@@ -47,7 +47,7 @@ main{
   margin: 10px;
   z-index: 98;
   opacity: 0.5;
-  background: #4c5159;
+  background: green;
   color: #ffffff;
   font-size: 12px;
   font-weight: 800;
@@ -60,6 +60,7 @@ main{
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(0, 0, 0, 0.11);
   transition: box-shadow 0.15s ease-in-out; /* Add a transition effect */
+  opacity: 0.5
 
 }
 .safe-button:hover {

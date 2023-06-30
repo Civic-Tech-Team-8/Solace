@@ -15,9 +15,10 @@ function EventList() {
     userLocation,
     updateUserAlertData,
     currentUser,
+    alert,
+    setAlert,
   } = useContext(CurrentUserContext);
   const [modal, setModal] = useState(false);
-  const [alert, setAlert] = useState([]);
   const [userAlert, setUserAlert] = useState([]);
   const [singleEvent, setSingleEvent] = useState([]);
   const [commentEvent, setCommentEvent] = useState([]);
@@ -42,11 +43,7 @@ function EventList() {
       .catch((error) => console.log(error));
   };
 
-  const fetchProcessed = async () => {
-    const data = await apiFetchHandler("/api/events");
-    setAlert(data[0]);
-    updateAlertData(data[0]);
-  };
+ 
 
   const latitude = events[0]?.geometry[0]?.coordinates[0];
   const longitude = events[0]?.geometry[0]?.coordinates[1];
@@ -72,7 +69,6 @@ function EventList() {
 
   useEffect(() => {
     fetchEvents();
-    fetchProcessed();
     updateEventData();
     updateUserAlertData();
   }, []);
@@ -150,7 +146,7 @@ function EventList() {
                       COMMENT
                     </button>
                   </div>
-                  <em> Status: {a?.certainty}</em>
+                  <em> Status: {a?.status}</em>
                 </a>
               </li>
             </React.Fragment>

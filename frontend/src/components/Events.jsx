@@ -83,7 +83,7 @@ function EventList() {
   const eventId = events.map((event) => event.id);
   const alertProp = userAlert.features?.map((alerts) => alerts.properties);
   const alertId = alertProp?.map((a) => a.id);
-
+  console.log(alertProp);
   return (
     <>
       <dl className="eventList">

@@ -104,8 +104,8 @@ const MapComponent = () => {
       const alertLatitude = alertData[i]?.eventCoordinates[0][1];
       const alertLongitude = alertData[i]?.eventCoordinates[0][0];
 
-      const { title } = data[i];
-      const eventType = data[i].categories[0].title;
+      const title = alertData[i].severity;
+      const eventType = alertData[i].event;
 
 
       const mapHold = {
@@ -116,7 +116,7 @@ const MapComponent = () => {
             type: 'Feature',
             geometry: {
               type: 'Point',
-              coordinates: [alertLatitude, alertLongitude],
+              coordinates: [alertLongitude, alertLatitude],
             },
             properties: {
               title: `${eventType}`,
@@ -135,9 +135,9 @@ const MapComponent = () => {
           el.className = 'marker';
 
           const userLocationPin = document.createElement('div');
-          userLocationPin.className = 'userLocationPin';
-          const coordinates = feature.geometry.coordinates.slice(); // Coordinates of Disasters
-          console.log(coordinates);
+          
+          const coordinates = alertData[i]?.eventCoordinates[0]; // Coordinates of Disasters
+          console.log("coor:", coordinates);
           const { description } = feature.properties; // Description of Disasters
           const type = feature.properties.title; // Type of Disasters
 

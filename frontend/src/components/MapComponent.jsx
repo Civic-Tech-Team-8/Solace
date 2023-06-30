@@ -20,9 +20,13 @@ const MapComponent = () => {
   const [myLatitude, setLatitude] = useState(null); // Hook is used to retrieve the geolocation data when the component mounts
   const [myLongitude, setLongitude] = useState(null);
 
-  const { eventData, userLocation } = useContext(CurrentUserContext); // Data from MapComponent
+  const { eventData, userAlertData, alertData } = useContext(CurrentUserContext); // Data from MapComponent
   const events = eventData?.events;
   const data = events?.filter((event) => !event.categories.some((category) => category.title === 'Sea and Lake Ice'));
+
+    if (alertData) {
+      console.log(alertData[0]?.eventCoordinates[0][1]);
+    }
   const navigate = useNavigate();
   // const [eventLatitude, setEventLatitude] = useState(data[0].geometry[0]?.coordinates[0]); 
   // const [eventLongitude, setEventLongitude] = useState(data[0].geometry[0]?.coordinates[1]);
@@ -40,7 +44,6 @@ const MapComponent = () => {
     function showPosition(position) {
       setLatitude(position?.coords.latitude); // Functions are used to update the state variables with the retrieved values.
       setLongitude(position?.coords.longitude);
-      // console.log(`My latitude is ${position.coords.latitude} and my longitude is ${position.coords.longitude}`);
     }
 
     mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRnZGtmNjEzc2IzanF2c2xvYW54Y28ifQ.zOjQMeR4v4rGw4_L7_-Iig';
@@ -70,14 +73,17 @@ const MapComponent = () => {
     const eventRow = document.getElementsByClassName('eventRow');
     // console.log("event row:", eventRow);
 
+    
     for (let i = 0; i < eventRow.length; i++) {
       const element = eventRow[i];
+     
+    
       // Add event listener to the element
       element.addEventListener('click', () => {
         // Handle the click event
         // Fly to a random location
         map.flyTo({
-          center: [data[i].geometry[0]?.coordinates[0], data[i].geometry[0]?.coordinates[1]],
+          center: [alertData[i]?.eventCoordinates[0][0], alertData[i]?.eventCoordinates[0][1]],
           essential: true, // this animation is considered essential with respect to prefers-reduced-motion
         });
       });
@@ -92,8 +98,11 @@ const MapComponent = () => {
 
 
     for (let i = 0; i < data?.length; i++) {
-      const latitude = data[i].geometry[0]?.coordinates[0];
-      const longitude = data[i].geometry[0]?.coordinates[1];
+      const latitude = alert[i]?.eventCoordinates[0][1];
+      const longitude = alert[i]?.eventCoordinates[0][0];
+
+      const alertLatitude = alertData[i]?.eventCoordinates[0][1];
+      const alertLongitude = alertData[i]?.eventCoordinates[0][0];
 
       const { title } = data[i];
       const eventType = data[i].categories[0].title;
@@ -107,7 +116,7 @@ const MapComponent = () => {
             type: 'Feature',
             geometry: {
               type: 'Point',
-              coordinates: [latitude, longitude],
+              coordinates: [alertLatitude, alertLongitude],
             },
             properties: {
               title: `${eventType}`,
@@ -127,8 +136,8 @@ const MapComponent = () => {
 
           const userLocationPin = document.createElement('div');
           userLocationPin.className = 'userLocationPin';
-
           const coordinates = feature.geometry.coordinates.slice(); // Coordinates of Disasters
+          console.log(coordinates);
           const { description } = feature.properties; // Description of Disasters
           const type = feature.properties.title; // Type of Disasters
 
@@ -174,7 +183,7 @@ const MapComponent = () => {
         });
       }
     }
-  }, [data, myLatitude, myLongitude]);
+  }, [data, myLatitude, myLongitude, alertData]);
   // [-74.5, 40]
   return (<div id="map"></div>);
 };

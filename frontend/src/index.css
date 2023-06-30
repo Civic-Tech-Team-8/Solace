@@ -81,7 +81,7 @@ body {
 
 .eventList {
   height: calc(100vh - 72px);
-  width: auto;
+  width: acommito;
   display: flex;
   flex-grow: 1;
   list-style: none;
@@ -177,25 +177,9 @@ h1 {
   font-weight: 600;
 }
 
-.card-status {
-  font-size: 18px;
-  color: #aaa;
-  font-weight: 500;
-}
-
 .card {
   margin: 2%;
   display: flex;
-}
-
-.user-status {
-  color: #fff;
-  font-weight: 700;
-}
-
-.card-safe-status {
-  color: #fff;
-  font-weight: 800;
 }
 
 .friends-list, .users-list {
@@ -237,7 +221,7 @@ input{
   padding: 0 16px;
   border-radius: 0.25rem;
   border: 2px solid transparent;
-  width: 85%;
+  width: 100%;
   border-width: 2px;
 }
 

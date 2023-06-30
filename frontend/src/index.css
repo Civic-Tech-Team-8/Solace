@@ -183,6 +183,24 @@ h1 {
   display: flex;
 }
 
+.card-status {
+  color: #bbb;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.card-safe-status {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.user-status {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 400;
+}
+
 .friends-list, .users-list {
   margin: 2%;
 }

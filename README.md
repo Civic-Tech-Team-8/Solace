@@ -1,4 +1,6 @@
-# Solace
+# <img width="193" alt="Screenshot 2024-01-17 at 5 55 15 PM" src="https://github.com/Civic-Tech-Team-8/Solace/assets/114108168/dc7e1733-3c66-4f74-90cd-1514e7d83b07">
+
+
 
 Solace is a web application designed to locate natural diasters nationwide. It strives to provide people with peace of mind and the reassurance that their loved ones are safe and secure back home after a natural disaster occurs.
 |  Sign Up                              |  Login                               |

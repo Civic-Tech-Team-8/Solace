@@ -38,7 +38,7 @@ export default function SignUpPage() {
 
   // MAP GLOBE BACKGROUND ================================================================
   useEffect(() => {
-    mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRkYWV4czAxa28za3QzeWgzcnB5YnAifQ.Sa0yc1I-LsaVBVMIPLYzxA';
+    mapboxgl.accessToken = 'pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNscmJlanRhOTBwb2syb2xleG80ZjA3eTAifQ.ktnxkczWFA9zRMferdbGVw';
 
     const map = new mapboxgl.Map({
       container: 'signInMap',

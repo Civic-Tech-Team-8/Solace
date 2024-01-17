@@ -26,8 +26,8 @@ const MapComponent = () => {
   const data = events?.filter(
     (event) =>
       !event.categories.some(
-        (category) => category.title === "Sea and Lake Ice"
-      )
+        (category) => category.title === "Sea and Lake Ice",
+      ),
   );
 
   if (alertData) {
@@ -46,15 +46,15 @@ const MapComponent = () => {
       setLongitude(position?.coords.longitude);
     }
 
-    mapboxgl.accessToken =
-      "pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNsaXRnZGtmNjEzc2IzanF2c2xvYW54Y28ifQ.zOjQMeR4v4rGw4_L7_-Iig";
+    mapboxgl.accessToken = "pk.eyJ1IjoidHJleWphZGVkIiwiYSI6ImNscmJlanRhOTBwb2syb2xleG80ZjA3eTAifQ.ktnxkczWFA9zRMferdbGVw";
     const map = new mapboxgl.Map({
       container: "map", // container ID
-      style: "mapbox://styles/treyjaded/cliwe9c1002ak01qhag512fac", // style URL
+      style: "mapbox://styles/treyjaded/cliwe9c1002ak01qhag512fac?optimize=true", // style URL
       // DARK STYLE:     mapbox://styles/mapbox/dark-v11
       // CUSTOM TREVON STYLE:   mapbox://styles/treyjaded/cliwe9c1002ak01qhag512fac
       center: [myLongitude, myLatitude], // starting position [lng, lat] NJ = [-74.5, 40]
-      zoom: 9, // starting zoom
+      zoom: 10, // starting zoom
+    
     });
     // Add geolocate control to the map.
     map.addControl(
@@ -66,7 +66,7 @@ const MapComponent = () => {
         trackUserLocation: true,
         // Draw an arrow next to the location dot to indicate which direction the device is heading.
         showUserHeading: false,
-      })
+      }),
     );
     // Add zoom and rotation controls to the map.
     map.addControl(new mapboxgl.NavigationControl());
